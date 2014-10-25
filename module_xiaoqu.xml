@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_xiaoqu" default="compile.module.xiaoqu">
+  <dirname property="module.xiaoqu.basedir" file="${ant.file.module_xiaoqu}"/>
+  
+  <property name="module.jdk.home.xiaoqu" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.xiaoqu" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.xiaoqu" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.xiaoqu" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="xiaoqu.output.dir" value="${module.xiaoqu.basedir}/target/classes"/>
+  <property name="xiaoqu.testoutput.dir" value="${module.xiaoqu.basedir}/target/test-classes"/>
+  
+  <path id="xiaoqu.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="xiaoqu.module.production.classpath">
+    <path refid="${module.jdk.classpath.xiaoqu}"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.4.2.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.5.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <pathelement location="${basedir}/src/lib/ojdbc7.jar"/>
+  </path>
+  
+  <path id="xiaoqu.runtime.production.module.classpath">
+    <pathelement location="${xiaoqu.output.dir}"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.4.2.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.5.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <pathelement location="${basedir}/src/lib/ojdbc7.jar"/>
+  </path>
+  
+  <path id="xiaoqu.module.classpath">
+    <path refid="${module.jdk.classpath.xiaoqu}"/>
+    <pathelement location="${xiaoqu.output.dir}"/>
+    <path refid="library.maven:_junit:junit:4.11.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.4.2.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.5.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <pathelement location="${basedir}/src/lib/ojdbc7.jar"/>
+  </path>
+  
+  <path id="xiaoqu.runtime.module.classpath">
+    <pathelement location="${xiaoqu.testoutput.dir}"/>
+    <pathelement location="${xiaoqu.output.dir}"/>
+    <path refid="library.maven:_junit:junit:4.11.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:eclipselink:2.4.2.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:javax.persistence:2.0.5.classpath"/>
+    <path refid="library.maven:_org.eclipse.persistence:commonj.sdo:2.1.1.classpath"/>
+    <pathelement location="${basedir}/src/lib/ojdbc7.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.xiaoqu">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.xiaoqu">
+    <patternset refid="excluded.from.module.xiaoqu"/>
+  </patternset>
+  
+  <path id="xiaoqu.module.sourcepath">
+    <dirset dir="${module.xiaoqu.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="xiaoqu.module.test.sourcepath">
+    <dirset dir="${module.xiaoqu.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.xiaoqu" depends="compile.module.xiaoqu.production,compile.module.xiaoqu.tests" description="Compile module Xiaoqu"/>
+  
+  <target name="compile.module.xiaoqu.production" description="Compile module Xiaoqu; production classes">
+    <mkdir dir="${xiaoqu.output.dir}"/>
+    <javac destdir="${xiaoqu.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.xiaoqu}/javac">
+      <compilerarg line="${compiler.args.xiaoqu}"/>
+      <bootclasspath refid="xiaoqu.module.bootclasspath"/>
+      <classpath refid="xiaoqu.module.production.classpath"/>
+      <src refid="xiaoqu.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.xiaoqu"/>
+    </javac>
+    
+    <copy todir="${xiaoqu.output.dir}">
+      <fileset dir="${module.xiaoqu.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.xiaoqu.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.xiaoqu.tests" depends="compile.module.xiaoqu.production" description="compile module Xiaoqu; test classes" unless="skip.tests">
+    <mkdir dir="${xiaoqu.testoutput.dir}"/>
+    <javac destdir="${xiaoqu.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.xiaoqu}/javac">
+      <compilerarg line="${compiler.args.xiaoqu}"/>
+      <bootclasspath refid="xiaoqu.module.bootclasspath"/>
+      <classpath refid="xiaoqu.module.classpath"/>
+      <src refid="xiaoqu.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.xiaoqu"/>
+    </javac>
+    
+    <copy todir="${xiaoqu.testoutput.dir}">
+      <fileset dir="${module.xiaoqu.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+    <copy todir="${xiaoqu.testoutput.dir}/META-INF">
+      <fileset dir="${module.xiaoqu.basedir}/src/META-INF">
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.xiaoqu" description="cleanup module">
+    <delete dir="${xiaoqu.output.dir}"/>
+    <delete dir="${xiaoqu.testoutput.dir}"/>
+  </target>
+</project>
