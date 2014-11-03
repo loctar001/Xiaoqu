@@ -98,6 +98,11 @@
         <type type="file"/>
       </fileset>
     </copy>
+        <copy todir="${xiaoqu.output.dir}/META-INF">
+      <fileset dir="${module.xiaoqu.basedir}/src/META-INF">
+        <type type="file"/>
+      </fileset>
+    </copy>
   </target>
   
   <target name="compile.module.xiaoqu.tests" depends="compile.module.xiaoqu.production" description="compile module Xiaoqu; test classes" unless="skip.tests">
